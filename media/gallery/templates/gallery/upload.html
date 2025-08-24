@@ -1,0 +1,10 @@
+{% extends "gallery/base.html" %}
+{% block title %}Upload – MediaHub{% endblock %}
+{% block content %}
+<h1>Upload Media</h1>
+<form method="post" enctype="multipart/form-data" class="card form">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Upload</button>
+</form>
+{% endblock %}

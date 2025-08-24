@@ -1,0 +1,50 @@
+{% extends "gallery/base.html" %}
+{% block title %}{{ item.title }} – MediaHub{% endblock %}
+{% block content %}
+<article class="card">
+  <h1>{{ item.title }}</h1>
+  <p>{{ item.description|default:"" }}</p>
+
+  {% if item.media_type == "image" %}
+    <img class="viewer" src="{{ item.file.url }}" alt="{{ item.title }}">
+  {% elif item.media_type == "audio" %}
+    <audio controls preload="metadata" class="viewer">
+      <source src="{% url 'gallery:stream' item.pk %}">
+      Your browser does not support audio playback.
+    </audio>
+  {% elif item.media_type == "video" %}
+    <video controls preload="metadata" class="viewer">
+      <source src="{% url 'gallery:stream' item.pk %}">
+      Your browser does not support video playback.
+    </video>
+  {% else %}
+    <p><a href="{{ item.file.url }}" download>Download file</a></p>
+  {% endif %}
+
+  <p><small>Type: {{ item.media_type|title }} • Uploaded {{ item.created_at|date:"M d, Y H:i" }}</small></p>
+</article>
+<h2>{{ image.title }}</h2>
+<video controls width="400">
+  <source src="{{ image.file.url }}" type="video/mp4">
+</video>
+
+<h2>{{ item.title }}</h2>
+<video controls width="400">
+  <source src="{{ item.file.url }}" type="video/mp4">
+</video>
+
+<p>Uploaded on {{ item.created_at }}</p>
+
+<!-- Edit link -->
+<p><a href="{% url 'gallery:edit' item.pk %}">Edit</a></p>
+
+<!-- Direct delete button -->
+<form method="post" action="{% url 'gallery:delete' item.pk %}" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit" style="background:red; color:white; padding:5px 10px; border:none; border-radius:5px;">
+    Delete
+  </button>
+</form>
+
+
+{% endblock %}
